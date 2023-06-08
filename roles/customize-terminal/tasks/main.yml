@@ -8,6 +8,11 @@
     key: "/org/mate/terminal/global/profile-list"
     state: "read"
   register: "profile_list"
+- name: "profile_list was not set, setting"
+  set_fact:
+    profile_list: 
+      value: '["default"]'
+  when: profile_list.value is none
 - name: "Adding our profile"
   set_fact:
     new_profile_list: "{{ profile_list.value | regex_replace(']$', \", 'video']\") }}"

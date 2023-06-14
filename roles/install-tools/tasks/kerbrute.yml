@@ -1,14 +1,4 @@
 ---
-- name: "Cloning Kerbrute Repo"
-  git:
-    repo: "https://github.com/ropnop/kerbrute"
-    dest: "/tmp/kerbrute"
-- name: "Building Kerbrute"
-  shell: |
-    cd /tmp/kerbrute
-    go build
-- name: "Moving Kerbrute to bin"
-  copy:
-    src: "/tmp/kerbrute/kerbrute"
-    dest: "{{ ansible_env.HOME }}/.local/bin/"
-    mode: 0750
+- name: "install Kerbrute"
+  shell: go install github.com/ropnop/kerbrute@master
+

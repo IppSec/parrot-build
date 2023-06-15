@@ -1,0 +1,77 @@
+{
+  "policies": {
+    "Certificates": {
+      "Install": ["/usr/local/share/ca-certificates/BurpSuiteCA.der"]
+    },
+    "DisableAppUpdate": true,
+    "DisplayBookmarksToolbar": true,
+    "NoDefaultBookmarks": true,
+    "OverrideFirstRunPage": "",
+    "OverridePostUpdatePage": "",
+    "Homepage": {
+      "URL": "https://start.parrotsec.org",
+      "Locked": false,
+      "StartPage": "homepage"
+    },
+    "SearchEngines": {
+      "Default": "DuckDuckGo",
+      "PreventInstalls": true
+    },
+    "SearchSuggestEnabled": false,
+    "DisableTelemetry": true,
+    "CaptivePortal": false,
+    "Cookies": {
+      "Default": true,
+      "AcceptThirdParty": "never",
+      "RejectTracker": true
+    },
+    "DNSOverHTTPS": {
+      "Enabled": false
+    },
+    "UserMessaging": {
+      "WhatsNew": false,
+      "ExtensionRecommendations": false,
+      "FeatureRecommendations": false,
+      "UrlbarInterventions": false,
+      "SkipOnboarding": true
+    },
+    "DisableFeedbackCommands": true,
+    "DisableFirefoxStudies": true,
+    "DisablePocket": true,
+    "DontCheckDefaultBrowser": true,
+    "EnableTrackingProtection": {
+      "Value": true,
+      "Cryptomining": true,
+      "Fingerprinting": true
+    },
+    "Extensions": {
+      "Install": [
+{% for item in FirefoxPlugins %}
+        "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"{{ "," if not loop.last }}
+{% endfor %}
+      ]
+    },
+    "FirefoxHome": {
+      "Search": true,
+      "TopSites": true,
+      "Highlights": false,
+      "Pocket": false,
+      "Snippets": false,
+      "Locked": false
+    },
+    "HardwareAcceleration": true,
+    "NetworkPrediction": false,
+    "PopupBlocking": {
+      "Allow": ["https://crypt.parrot.sh",
+                "https://pad.parrot.sh"],
+      "Default": false,
+      "Locked": false
+    },
+    "PromptForDownloadLocation": true,
+    "SupportMenu": {
+      "Title": "Parrot Support",
+      "URL": "https://community.parrotsec.org",
+      "AccessKey": "S"
+    }
+  }
+}

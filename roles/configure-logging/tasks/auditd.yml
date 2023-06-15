@@ -1,0 +1,104 @@
+- name: "Install Packages"
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - auditd
+    - jq
+  become: true
+  become_method: sudo
+
+- name: "Configure Audit Rules"
+  copy:
+    src: audit.rules
+    dest: /etc/audit/rules.d/audit.rules
+    owner: root
+    group: root
+    mode: 0640      
+  become: true
+  become_method: sudo
+
+- name: "Create _laurel user"
+  user:
+    name: _laurel
+    state: present
+    shell: /bin/false
+    create_home: no
+    home: /var/log/laurel
+  become: true
+  become_method: sudo
+
+- name: "Create directories for _laurel /var/log/laurel"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: _laurel
+    group: _laurel
+    mode: 0750
+  loop:
+    - /var/log/laurel
+    - /tmp/laurel
+  become: true
+  become_method: sudo
+
+- name: "Create directory /etc/laurel"
+  file:
+    path: /etc/laurel
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+  become: true
+  become_method: sudo
+
+
+- name: "Copy laurel/config.toml to /etc/laurel/config.toml"
+  copy:
+    src: laurel/config.toml
+    dest: /etc/laurel/config.toml
+    owner: _laurel
+    group: _laurel
+    mode: 0640
+  become: true
+  become_method: sudo
+
+- name: "Copy laurel/laurel.conf to /etc/audit/plugins.d"
+  copy:
+    src: laurel/laurel.conf
+    dest: /etc/audit/plugins.d/laurel.conf
+    owner: root
+    group: root
+    mode: 0640
+  become: true
+  become_method: sudo
+
+- name: "Downloading https://github.com/threathunters-io/laurel/releases/download/v0.5.2/laurel-v0.5.2-x86_64-glibc.tar.gz"
+  get_url:
+    url: https://github.com/threathunters-io/laurel/releases/download/v0.5.2/laurel-v0.5.2-x86_64-glibc.tar.gz
+    dest: /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz
+    mode: 0640
+
+- name: "Extract /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz"
+  unarchive:
+    src: /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz
+    dest: /tmp/laurel/        
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  become_method: sudo
+
+- name: "Running install -m755 laurel /usr/local/sbin/laurel"
+  command: "install -m755 laurel /usr/local/sbin/laurel"
+  args:
+    chdir: /tmp/laurel/
+  become: true
+  become_method: sudo
+  
+- name: "Restart auditd"
+  service:
+    name: auditd
+    state: restarted
+  become: true
+  become_method: sudo
+

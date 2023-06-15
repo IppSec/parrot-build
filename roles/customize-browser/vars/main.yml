@@ -1,0 +1,16 @@
+---
+burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
+burpsuite_extras_jars:
+  jruby:
+    jar: jruby-complete.jar
+    url: https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.0.0/jruby-complete-9.4.0.0.jar
+    checksum: sha256:e6817cf528976a50a054910f006ee34df07c4580c8a2a4c8c8d61cda0238a108
+  jython:
+    jar: jython-standalone.jar
+    url: https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.3/jython-standalone-2.7.3.jar
+    checksum: sha256:da7f3d829b148bcfa86b059dc964e3a8556fedb021096c8db07e30c66faab9b4
+    
+FirefoxPlugins:
+  - "darkreader"
+  - "foxyproxy-standard"
+  - "wappalyzer"

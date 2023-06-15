@@ -1,0 +1,139 @@
+# Write log files relative to this directory
+directory = "/var/log/laurel"
+# Drop privileges from root to this user
+user = "_laurel"
+# The periodical time window in seconds for status information to be printed to Syslog.
+# Status report includes the running version, config and parsing stats.
+# Default is 0 --> no status reports.
+statusreport-period = 0
+# By default, audit events are read from stdin ("stdin"). Alternatively, they
+# can be consumed from an existing UNIX domain socket ("unix:/path/to/socket")
+input = "stdin"
+
+[auditlog]
+# Base file name for the JSONL-based log file. Set to "-" to log to stdout. In this case 
+# other log file related settings will be ignored.
+file = "audit.log"
+# Rotate when log file reaches this size (in bytes)
+size = 5000000
+# When rotating, keep this number of generations around
+generations = 10
+# Grant read permissions on the log files to these users, using
+# POSIX ACLs
+read-users = [ ]
+
+# Add a prefix to every output line. The CEE cookie can be used to
+# instruct consumers to parse the JSON document, cf.
+# https://www.rsyslog.com/doc/master/configuration/modules/mmjsonparse.html
+# line-prefix = "@cee: "
+
+# [debug]
+# dump-state-period = 120
+
+# [debug.log]
+# file = "debug.log"
+# size = 1000000
+# generations = 3
+
+# [debug.parse-error-log]
+# file = "parse-error.log"
+# size = 1000000
+# generations = 3
+
+[transform]
+
+# "array" (the default) causes EXECVE a0, a1, a2 … arguments to be
+# output as a list of strings, "ARGV". This is the default, it allows
+# analysts to reliably reproduce what was executed.
+#
+# "string" causes arguments to be concatenated into a single string,
+# separated by space characters, "ARGV_STR". This form allows for
+# easier grepping, but it is impossible to tell if space characters in
+# the resulting string are a separator or were part of an individual
+# argument in the original command line.
+
+execve-argv = [ "array" ]
+
+# execve-argv = [ "array", "string" ]
+
+# Trim excessively long EXECVE.ARGV and EXECVE.ARGV_STR entries.
+# Excess is cut from the middle of the argument list and a marker
+# indicating how many arguments / bytes have been cut is inserted.
+
+# execve-argv-limit-bytes = 10000
+
+[translate]
+
+# Perform translations of numeric values that can also be done by
+# auditd if configured with log_format=ENRICHED.
+
+# arch, syscall, sockaddr structures
+universal = false
+# UID, GID values
+user-db = false
+
+[enrich]
+
+# Add context (event-id, comm, exe, ppid) for *pid entries
+pid = true
+
+# List of environment variables to log for every EXECVE event
+execve-env = [ "LD_PRELOAD", "LD_LIBRARY_PATH" ]
+
+# Add container context to SYSCALL-based events
+container = true
+
+# Add script context to SYSCALL execve events
+script = true
+
+# Deprecated. Use pid instead.
+# parent-info = false
+
+[label-process]
+
+# Audit records that contain certain keys can be reused as a label
+# attached to the process.
+#
+# This is useful in combination with audit rules such as:
+# -w <path> -p x -k <key>
+# e.g.: -w /usr/bin/dpkg -p x -k software_mgmt
+label-keys = [ "software_mgmt" ]
+
+# Labels can be attached to or removed from processes that run certain
+# programs. The file program file path (SYSCALL.exe or /proc/pid/exe)
+# is matched against regular expressions. This is useful for programs
+# that cannot be identified through auditd file watches (-w <path> -p
+# x -k <key>).
+label-exe.'^/opt/.*/bin/java$' = 'java'
+label-exe.'^/usr/lib/jvm/.*/bin/java$' = 'java'
+label-exe.'^/snap/amazon-ssm-agent/\d+/' = 'amazon-ssm-agent'
+
+unlabel-exe."bin/php$" = "java"
+
+# Labels can be attached to or removed from processes that have been identified as
+# scripts.
+label-script."maint" = "^/root/maint-.*[.]sh$"
+
+# unlabel-script-"maint" = "…"
+
+# Process Labels can be propagated to spawned child processes. This is
+# useful for marking an entire subtree of children that have been
+# spawned within certain contexts (e.g. system management tools,
+# container runtimes, ssh servers, cron, etc.).
+propagate-labels = [ "software_mgmt", "amazon-ssm-agent" ]
+
+[filter]
+
+# When audit records with attached keys are being generated,
+# LAUREL will discard these.
+
+# filter-keys = ["filter-this"]
+
+# In addition to key based filtering it is also possible to configure label based 
+# filtering. This alows the possibility to filter based on parent processes.
+
+# filter-labels = ["software_mgmt"]
+
+# Filter events without specified key
+
+filter-null-keys = false

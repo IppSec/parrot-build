@@ -1,0 +1,10 @@
+---
+- name: "Installing useful github repos"
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.location }}"
+  loop:
+    - { repo: "https://github.com/Flangvik/SharpCollection", location: "/opt/SharpCollection" }
+  become: true
+  become_method: sudo
+

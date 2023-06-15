@@ -1,0 +1,9 @@
+---
+- name: "Installing Packages"
+  package:
+    name:
+      - jq
+      - pipx
+    state: latest
+  become: true
+  become_method: sudo

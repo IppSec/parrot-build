@@ -1,0 +1,10 @@
+---
+- name: "Installing tools from Gems"
+  gem:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - evil-winrm
+  become: true
+  become_method: sudo
+

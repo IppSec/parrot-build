@@ -3,3 +3,4 @@
 - include: kerbrute.yml
 - include: github-repos.yml
 - include: python-tools.yml
+- include: gem-tools.yml

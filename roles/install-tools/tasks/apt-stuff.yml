@@ -4,6 +4,7 @@
     name:
       - jq
       - pipx
+      - ntpdate
     state: latest
   become: true
   become_method: sudo

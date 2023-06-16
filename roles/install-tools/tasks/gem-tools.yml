@@ -2,8 +2,21 @@
 - name: "Installing tools from Gems"
   gem:
     name: "{{ item }}"
-    state: present
+    state: latest
   loop:
+    - logger
+    - stringio
+    - winrm
+    - builder
+    - erubi
+    - gssapi
+    - gyoku
+    - httpclient
+    - logging
+    - little-plugger
+    - nori
+    - rubyntlm
+    - winrm-fs
     - evil-winrm
   become: true
   become_method: sudo

@@ -138,7 +138,6 @@ if __name__ == "__main__":
         except Exception as e:
             print(e)
 
-    get_github_release("WithSecureLabs/chainsaw", "chainsaw_all", "/opt/")
     print("Usage: python gitdownload.py <repo> <regex> <output_directory> <name:optional>")    
     print("Example: python gitdownload.py jpillora/chisel _darwin_amd64.gz /tmp chisel_darwin_amd64")
     sys.exit(1)

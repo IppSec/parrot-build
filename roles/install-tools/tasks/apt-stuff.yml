@@ -5,6 +5,7 @@
       - jq
       - pipx
       - ntpdate
+      - flameshot
     state: latest
   become: true
   become_method: sudo

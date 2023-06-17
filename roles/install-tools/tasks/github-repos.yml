@@ -9,14 +9,14 @@
   become_method: sudo
 
 - name: "Copying python script to download github releases"
-copy:
-  src: "files/githubdownload.py"
-  dest: "/tmp/githubdownload.py"
-  owner: root
-  group: root
-  mode: 0755
-become: true
-become_method: sudo
+  copy:
+    src: "files/githubdownload.py"
+    dest: "/tmp/githubdownload.py"
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  become_method: sudo
 
 - name: "Downloading github releases"
   shell: "/tmp/githubdownload.py {{ item.repo }} {{ item.regex }} {{ item.location }} {% if item.filename is defined %}{{ item.filename }}{% endif %}"

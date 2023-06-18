@@ -30,3 +30,5 @@
     - { repo: "BloodHoundAD/BloodHound", regex: "BloodHound-linux-x64.zip", location: "/opt/" }
   async: 45
   poll: 0
+  become: true
+  become_method: sudo

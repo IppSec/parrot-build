@@ -27,11 +27,14 @@ def get_github_release_url(metadata, regex):
     Get the url for the release file that matches the regex.
     Returns: URL of the Binary
     """
-    regex = re.compile(regex)    
-    for item in metadata["assets"]:
-        if re.findall(regex, item["name"]):        
-            return item["browser_download_url"]
-    raise Exception("No matching file found")
+    try:
+        regex = re.compile(regex)    
+        for item in metadata["assets"]:
+            if re.findall(regex, item["name"]):        
+                return item["browser_download_url"]
+        raise Exception("No matching file found")
+    except Exception as e:
+        raise Exception(e)
 
 def get_http_binary_file(url):
     """
@@ -43,40 +46,62 @@ def get_http_binary_file(url):
     return io.BytesIO(response.content)
 
 def get_gzip_name(compressed_data):
-     """
-     Get the name of the file inside the gzip file.
-     Returns: The name of the file. 
-     """
-     gzip_header = compressed_data.getvalue()[:10]
-     if gzip_header.startswith(b"\x1f\x8b"):
-         name = compressed_data.getvalue()[10:].split(b'\x00', 1)[0].decode("utf-8")
-         return name
-     return False
+    """
+    Get the name of the file inside the gzip file.
+    Returns: The name of the file. 
+    """
+    try:
+        gzip_header = compressed_data.getvalue()[:10]
+        if gzip_header.startswith(b"\x1f\x8b"):
+            name = compressed_data.getvalue()[10:].split(b'\x00', 1)[0].decode("utf-8")            
+            raise Exception("Unable to identify compression type")
+    except Exception as e:
+        raise Exception(e)
      
+def extract_gz(compressed_data, output_directory, name=None):
+    """
+    Extract the gzip file.
+    Returns: Nothing
+    """
+    try:
+        if not name:
+            name = get_gzip_name(compressed_data)
+        with gzip.open(compressed_data, "rb") as gz:
+            with open(output_directory + "/" + name, "wb") as f_out:
+                f_out.write(gz.read())
+    except Exception as e:
+        raise Exception(e)
+
 def extract_tar(compressed_data, out_file):
     """
     Extract the tar file from the gzip file.
     Returns: Nothing
     """
-    gzip_header = compressed_data.getvalue()[:10]
-    if gzip_header.startswith(b"\x1f\x8b"):
-        with gzip.open(compressed_data, "rb") as gz:
-            with tarfile.open(fileobj=gz, mode="r:gz") as tar:
-                tar.extractall(path=out_file)    
-                return
-    raise Exception("Unable to identify compression type")
+    try:
+        gzip_header = compressed_data.getvalue()[:10]
+        if gzip_header.startswith(b"\x1f\x8b"):
+            with gzip.open(compressed_data, "rb") as gz:
+                with tarfile.open(fileobj=gz, mode="r:gz") as tar:
+                    tar.extractall(path=out_file)    
+                    return
+        raise Exception("Unable to identify compression type")
+    except Exception as e:
+        raise Exception(e)
 
 def extract_zip(compressed_data, out_file):
     """
     Extract the zip file.
     Returns: Nothing
     """
-    with zipfile.ZipFile(compressed_data, 'r') as zip_ref:
-        # If there is only one folder in the zip, go into the folder then extract it        
-        # dir = out_file.split("/")[-1] + "/"
-        # if zip_ref.infolist()[0].filename == dir:
-        #     zip_ref.start_dir = zip_ref.namelist()[0]                            
-        zip_ref.extractall(out_file)
+    try:
+        with zipfile.ZipFile(compressed_data, 'r') as zip_ref:
+            # If there is only one folder in the zip, go into the folder then extract it        
+            # dir = out_file.split("/")[-1] + "/"
+            # if zip_ref.infolist()[0].filename == dir:
+            #     zip_ref.start_dir = zip_ref.namelist()[0]                            
+            zip_ref.extractall(out_file)
+    except Exception as e:
+        raise Exception(e)
     
     
 
@@ -94,11 +119,7 @@ def get_github_release(repo, regex, output_directory, name=None):
         if url.endswith(".tar.gz"):
             extract_tar(f_bytes, output_directory)
         elif url.endswith(".gz"):
-            if not name:
-                name = get_gzip_name(f_bytes)
-            with gzip.open(f_bytes, "rb") as gz:                
-                with open(output_directory + "/" + name, "wb") as f_out:
-                        f_out.write(gz.read())
+            extract_gz(f_bytes, output_directory, name)
         elif url.endswith(".zip"):
             extract_zip(f_bytes, output_directory)
         else:

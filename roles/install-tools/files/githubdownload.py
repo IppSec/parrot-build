@@ -84,7 +84,8 @@ def extract_tar(compressed_data, out_file):
                 with tarfile.open(fileobj=gz, mode="r:gz") as tar:
                     tar.extractall(path=out_file)    
                     return
-        raise Exception("Unable to identify compression type")
+        else:
+            raise Exception("Unable to identify compression type")
     except Exception as e:
         raise Exception(e)
 

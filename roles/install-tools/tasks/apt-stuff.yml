@@ -1,4 +1,10 @@
 ---
+- name: "Updating apt repo/cache"
+  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+- name: "Upgrade all packages"
+  apt: upgrade=yes force_apt_get=yes
+
 - name: "Installing Packages"
   package:
     name:

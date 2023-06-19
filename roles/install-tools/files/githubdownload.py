@@ -53,8 +53,9 @@ def get_gzip_name(compressed_data):
     try:
         gzip_header = compressed_data.getvalue()[:10]
         if gzip_header.startswith(b"\x1f\x8b"):
-            name = compressed_data.getvalue()[10:].split(b'\x00', 1)[0].decode("utf-8")            
-            raise Exception("Unable to identify compression type")
+            name = compressed_data.getvalue()[10:].split(b'\x00', 1)[0].decode("utf-8")
+            return name        
+        raise Exception("Unable to identify compression type")
     except Exception as e:
         raise Exception(e)
      

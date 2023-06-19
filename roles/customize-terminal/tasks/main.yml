@@ -3,24 +3,29 @@
   copy:
     src: "{{ role_path }}/files/.bashrc"
     dest: "{{ ansible_env.HOME }}"
+
 - name: "Read current mate terminal profiles"
   dconf:
     key: "/org/mate/terminal/global/profile-list"
     state: "read"
   register: "profile_list"
+
 - name: "profile_list was not set, setting"
   set_fact:
     profile_list: 
       value: '["default"]'
   when: profile_list.value is none
+
 - name: "Adding our profile"
   set_fact:
     new_profile_list: "{{ profile_list.value | regex_replace(']$', \", 'video']\") }}"
+
 - name: "Writing updated profile list"
   dconf:
     key: "/org/mate/terminal/global/profile-list"
     value: "{{ new_profile_list }}"
   when: "'video' not in profile_list.value"
+  
 - name: "Restoring Video Profile from Dump"
   shell:
     cmd: "dconf load /org/mate/terminal/profiles/video/ < {{ role_path }}/files/dconf-dump-video"

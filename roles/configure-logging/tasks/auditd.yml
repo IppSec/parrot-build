@@ -1,10 +1,7 @@
 - name: "Install Packages"
-  apt:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - auditd
-    - jq
+  package:
+    name: "auditd"
+    state: present  
   become: true
   become_method: sudo
 
@@ -30,27 +27,19 @@
 
 - name: "Create directories for _laurel /var/log/laurel"
   file:
-    path: "{{ item }}"
+    path: "{{ item.path }}"
     state: directory
-    owner: _laurel
-    group: _laurel
-    mode: 0750
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0750') }}"
   loop:
-    - /var/log/laurel
-    - /tmp/laurel
+    - { "path": "/var/log/laurel", "owner": "_laurel", "group": "_laurel" }
+    - { "path": "/tmp/laurel", "owner": "_laurel", "group": "_laurel" }
+    - { "path":"/etc/laurel" }
   become: true
   become_method: sudo
-
-- name: "Create directory /etc/laurel"
-  file:
-    path: /etc/laurel
-    state: directory
-    owner: root
-    group: root
-    mode: 0750
-  become: true
-  become_method: sudo
-
+  async: 15
+  poll: 0
 
 - name: "Copy laurel/config.toml to /etc/laurel/config.toml"
   copy:

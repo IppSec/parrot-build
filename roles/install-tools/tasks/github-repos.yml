@@ -5,6 +5,7 @@
     dest: "{{ item.location }}"
   loop:
     - { repo: "https://github.com/Flangvik/SharpCollection", location: "/opt/SharpCollection" }
+    - { repo: "https://github.com/danielmiessler/SecLists", location: "/opt/SecLists" }
   become: true
   become_method: sudo
 

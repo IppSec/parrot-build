@@ -16,6 +16,7 @@
       - pipx
       - ntpdate
       - flameshot
+      - exiftool
     state: latest
   become: true
   become_method: sudo

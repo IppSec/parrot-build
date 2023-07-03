@@ -1,7 +1,7 @@
 # Write log files relative to this directory
 directory = "/var/log/laurel"
 # Drop privileges from root to this user
-user = "_laurel"
+user = "{{ laurel.user | default('_laurel') }}"
 # The periodical time window in seconds for status information to be printed to Syslog.
 # Status report includes the running version, config and parsing stats.
 # Default is 0 --> no status reports.
@@ -11,7 +11,7 @@ statusreport-period = 0
 input = "stdin"
 
 [auditlog]
-# Base file name for the JSONL-based log file. Set to "-" to log to stdout. In this case 
+# Base file name for the JSONL-based log file. Set to "-" to log to stdout. In this case
 # other log file related settings will be ignored.
 file = "audit.log"
 # Rotate when log file reaches this size (in bytes)
@@ -129,7 +129,7 @@ propagate-labels = [ "software_mgmt", "amazon-ssm-agent" ]
 
 # filter-keys = ["filter-this"]
 
-# In addition to key based filtering it is also possible to configure label based 
+# In addition to key based filtering it is also possible to configure label based
 # filtering. This alows the possibility to filter based on parent processes.
 
 # filter-labels = ["software_mgmt"]

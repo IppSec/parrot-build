@@ -1,2 +1,14 @@
 ---
 # defaults file for configure-logging
+
+prereq_packages:
+- name: audit
+- name: rsyslog
+
+laurel:
+  user: '_laurel'
+  toml_location: '/etc/laurel/config.toml'
+  binary_location: '/usr/local/sbin/laurel'
+  arch: 'x86_64'
+  binary_type: 'glibc'
+  # release_version: 'v0.5.2' # Only if pinning to specific version, comment out if you want the latest tag

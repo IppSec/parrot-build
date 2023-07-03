@@ -1,93 +1,149 @@
-- name: "Install Packages"
-  package:
-    name: "auditd"
-    state: present  
-  become: true
-  become_method: sudo
+---
 
-- name: "Configure Audit Rules"
-  copy:
-    src: audit.rules
-    dest: /etc/audit/rules.d/audit.rules
-    owner: root
-    group: root
-    mode: 0640      
+- name: Privileged block
   become: true
-  become_method: sudo
+  block:
+  - name: Ensure prerequisite packages are present
+    ansible.builtin.package:
+      name: "{{ package.name }}"
+      state: "{{ package.state | default('present') }}"
+    loop: "{{ prereq_packages }}"
+    loop_control:
+      loop_var: package
 
-- name: "Create _laurel user"
-  user:
-    name: _laurel
-    state: present
-    shell: /bin/false
-    create_home: no
-    home: /var/log/laurel
-  become: true
-  become_method: sudo
+  - name: Ensure best practice auditd rules are present
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/Neo23x0/auditd/master/audit.rules
+      dest: /etc/audit/rules.d/audit.rules
+      owner: root
+      group: root
+      mode: 0640
+    notify: "Load auditd rules"
 
-- name: "Create directories for _laurel /var/log/laurel"
-  file:
-    path: "{{ item.path }}"
+  - name: "Create laurel user"
+    ansible.builtin.user:
+      name: "{{ laurel.user | default('_laurel') }}"
+      state: present
+      shell: /bin/false
+      create_home: no
+      home: /var/log/laurel
+
+  - name: "Create directories for _laurel /var/log/laurel"
+    ansible.builtin.file:
+      path: "{{ file.path }}"
+      state: directory
+      owner: "{{ file.owner | default(laurel.user| default('_laurel')) }}"
+      group: "{{ file.group | default(laurel.user| default('_laurel')) }}"
+      mode: "{{ file.mode | default('0750') }}"
+    loop:
+      - path: /var/log/laurel
+      - path: /etc/laurel
+        owner: root
+        group: root
+    loop_control:
+      loop_var: file
+    async: 15
+    poll: 0
+
+  - name: "Copy laurel/config.toml to /etc/laurel/config.toml"
+    ansible.builtin.template:
+      src: etc/laurel/config.toml.j2
+      dest: /etc/laurel/config.toml
+      owner: "{{ laurel.user | default('_laurel') }}"
+      group: "{{ laurel.user | default('_laurel') }}"
+      mode: 0640
+
+  - name: Gather package facts to check for auditd version
+    ansible.builtin.package_facts:
+
+  - name: "Copy laurel/laurel.conf to appropriate auditd plugins directory based on auditd version"
+    ansible.builtin.template:
+      src: etc/laurel/laurel.conf.j2
+      dest: "{{ (ansible_facts.packages['audit'][0].version is version_compare('3.0', 'ge')) | ternary('/etc/audit/plugins.d/laurel.conf', '/etc/audisp/plugins.d/laurel.conf') }}"
+      owner: root
+      group: root
+      mode: 0640
+
+- name: Create temporary directory
+  ansible.builtin.tempfile:
     state: directory
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0750') }}"
-  loop:
-    - { "path": "/var/log/laurel", "owner": "_laurel", "group": "_laurel" }
-    - { "path": "/tmp/laurel", "owner": "_laurel", "group": "_laurel" }
-    - { "path":"/etc/laurel" }
-  become: true
-  become_method: sudo
-  async: 15
-  poll: 0
+  register: temp_folder
 
-- name: "Copy laurel/config.toml to /etc/laurel/config.toml"
-  copy:
-    src: laurel/config.toml
-    dest: /etc/laurel/config.toml
-    owner: _laurel
-    group: _laurel
-    mode: 0640
-  become: true
-  become_method: sudo
+- name: Scrape tags page
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/threathunters-io/laurel/tags"
+    return_content: yes
+    headers:
+      Accept: "application/vnd.github.v3+json"
+  register: laurel_github_tags
 
-- name: "Copy laurel/laurel.conf to /etc/audit/plugins.d"
-  copy:
-    src: laurel/laurel.conf
-    dest: /etc/audit/plugins.d/laurel.conf
-    owner: root
-    group: root
-    mode: 0640
+- name: Privileged laurel block
   become: true
-  become_method: sudo
+  notify: "Re-evaluate auditd configuration"
+  block:
+  - name: Fetch and extract laurel
+    ansible.builtin.unarchive:
+      src: https://github.com/threathunters-io/laurel/releases/download/{{ laurel.release_version | default(laurel_github_tags.json[0].name) }}/laurel-{{ laurel.release_version | default(laurel_github_tags.json[0].name) }}-{{ laurel.arch | default('x86_64') }}-{{ laurel.binary_type | default('glibc') }}.tar.gz
+      dest: "{{ temp_folder.path }}/"
+      remote_src: yes
+      owner: root
+      group: root
+    register: laurel_extracted
 
-- name: "Downloading https://github.com/threathunters-io/laurel/releases/download/v0.5.2/laurel-v0.5.2-x86_64-glibc.tar.gz"
-  get_url:
-    url: https://github.com/threathunters-io/laurel/releases/download/v0.5.2/laurel-v0.5.2-x86_64-glibc.tar.gz
-    dest: /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz
-    mode: 0640
+  - name: Install laurel
+    ansible.builtin.command: "install -m755 laurel {{ laurel.binary_location | default('/usr/local/sbin/laurel') }}"
+    args:
+      chdir: "{{ temp_folder.path }}/"
 
-- name: "Extract /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz"
-  unarchive:
-    src: /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz
-    dest: /tmp/laurel/        
-    owner: root
-    group: root
-    mode: 0755
+  - name: Cleanup temp directory
+    ansible.builtin.file:
+      path: "{{ temp_folder.path }}"
+      state: absent
+
+- name: Check SELinux mode when SELinux packages are found on target
+  when: "'selinux-policy' in ansible_facts.packages"
+  ansible.builtin.command: getenforce
+  register: selinux_status
+
+- name: SELinux block
   become: true
-  become_method: sudo
+  when:
+  - "'Enforcing' in selinux_status.stdout"
+  - "'selinux-policy' in ansible_facts.packages"
+  block:
+  - name: Install required packages
+    ansible.builtin.package:
+      name: "{{ package.name }}"
+      state: present
+    loop:
+    - name: make
+    - name: selinux-policy-devel
+    - name: git
+    loop_control:
+      loop_var: package
 
-- name: "Running install -m755 laurel /usr/local/sbin/laurel"
-  command: "install -m755 laurel /usr/local/sbin/laurel"
-  args:
-    chdir: /tmp/laurel/
-  become: true
-  become_method: sudo
-  
-- name: "Restart auditd"
-  service:
-    name: auditd
-    state: restarted
-  become: true
-  become_method: sudo
+  - name: Create temporary directory
+    ansible.builtin.tempfile:
+      state: directory
+    register: temp_folder_selinux
 
+  - name: Checkout laurel repo for up-to-date SELinux policies
+    ansible.builtin.git:
+      repo: https://github.com/threathunters-io/laurel.git
+      dest: "{{ temp_folder_selinux.path }}"
+
+  - name: Compile the policy and install it into the running kernel
+    ansible.builtin.shell: |
+      make -C contrib/selinux
+      sudo semodule -i contrib/selinux/laurel.pp
+      sudo restorecon -v -R -F /usr/local/sbin/laurel /etc/laurel /var/log/laurel
+    args:
+      chdir: "{{ temp_folder_selinux.path }}"
+
+  - name: Cleanup temp directory
+    ansible.builtin.file:
+      path: "{{ temp_folder_selinux.path }}"
+      state: absent
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

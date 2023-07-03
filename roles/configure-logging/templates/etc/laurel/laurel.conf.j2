@@ -1,0 +1,6 @@
+active = yes
+direction = out
+type = always
+format = string
+path = {{ laurel.binary_location | default('/usr/local/sbin/laurel') }}
+args = --config {{ laurel.toml_location | default('/etc/laurel/config.toml') }}

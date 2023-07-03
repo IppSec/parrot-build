@@ -1,3 +1,11 @@
 ---
-- include: "ufw.yml"
-- include: "auditd.yml"
+
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Only include ufw related tasks when the service is present on the target
+  when: "'ufw' in ansible_facts.services"
+  ansible.builtin.include_tasks: "ufw.yml"
+
+- name: Include auditd tasks
+  ansible.builtin.include_tasks: "auditd.yml"

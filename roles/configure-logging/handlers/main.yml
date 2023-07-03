@@ -1,2 +1,15 @@
 ---
 # handlers file for configure-logging
+
+- name: "Restart ufw"
+  ansible.builtin.service:
+    name: ufw
+    state: restarted
+  become: true
+
+- name: "Load auditd rules"
+  ansible.builtin.command: augenrules --load
+
+- name: "Re-evaluate auditd configuration"
+  ansible.builtin.command: pkill -HUP auditd
+  become: true

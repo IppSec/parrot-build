@@ -1,8 +1,6 @@
 ---
 - name: "Installing tools from Gems"
-  gem:
-    name: "{{ item }}"
-    state: latest
+  shell: "gem install {{ item }}"
   loop:
     - logger
     - stringio

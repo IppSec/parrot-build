@@ -1,5 +1,5 @@
 ---
-- name: "Customizing Parrot"
+- name: "Customizing hack"
   hosts: localhost
   connection: local
   roles:

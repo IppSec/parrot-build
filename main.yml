@@ -15,6 +15,6 @@
             - streetsidesoftware.code-spell-checker
             - ms-python.python
             - DEVSENSE.phptools-vscode
-            - GitHub.copilot-nightly
+            - GitHub.copilot
             - snyk-security.snyk-vulnerability-scanner
 

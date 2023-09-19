@@ -1,0 +1,6 @@
+- name: "Copying Feroxbuster Config"
+  copy:
+    src: "{{ role_path }}/files/ferox-config.toml"
+    dest: "/etc/feroxbuster"
+  become: true
+  become_method: sudo

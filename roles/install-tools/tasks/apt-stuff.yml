@@ -17,6 +17,7 @@
       - ntpdate
       - flameshot
       - exiftool
+      - feroxbuster
     state: latest
   become: true
   become_method: sudo

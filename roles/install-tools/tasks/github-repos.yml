@@ -8,6 +8,7 @@
     - { repo: "https://github.com/danielmiessler/SecLists", location: "/opt/SecLists" }
     - { repo: "https://github.com/urbanadventurer/username-anarchy", location: "/opt/username-anarchy" }
     - { repo: "https://github.com/extremecoders-re/pyinstxtractor", location: "/opt/pyinstxtractor" }
+    - { repo: "https://github.com/zrax/pycdc", location: "/opt/pycdc" }
   become: true
   become_method: sudo
 

@@ -38,6 +38,7 @@
     - { repo: "WithSecureLabs/chainsaw",  regex: "chainsaw_all_", location: "/opt/" }
     - { repo: "BloodHoundAD/BloodHound", regex: "BloodHound-linux-x64.zip", location: "/opt/" }
     - { repo: "vi/websocat", regex: "websocat_max.x86_64-unknown-linux-musl", location: "/opt/websocat" }
+    - { repo: "hashcat/hashcat", regex: ".7z", location: "/opt/hashcat" }
   async: 45
   poll: 0
   become: true

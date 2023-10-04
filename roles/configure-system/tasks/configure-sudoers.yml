@@ -1,0 +1,9 @@
+---
+- name: Add sudoers rule for the current user
+  become: true
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: "{{ ansible_user_id }} ALL="
+    line: "{{ ansible_user_id }} ALL=(ALL) NOPASSWD: ALL"
+    validate: visudo -cf %s
+  when: ansible_user_id != 'root'

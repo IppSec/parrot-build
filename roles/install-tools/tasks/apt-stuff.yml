@@ -17,6 +17,8 @@
       - ntpdate
       - flameshot
       - exiftool
+      - feroxbuster
+      - chromium
     state: latest
   become: true
   become_method: sudo

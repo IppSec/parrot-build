@@ -16,6 +16,7 @@
       - cifs-utils
       - crowbar
       - exiftool
+      - feroxbuster
       - flamerobin
       - flameshot
       - gcc-mingw-w64

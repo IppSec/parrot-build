@@ -1,14 +1,23 @@
-** Make sure to pip install ansible, apt has an older copy **
-
 # Instructions
-* Start with Parrot HTB Edition
-* Install Ansible (`python3 -m pip install ansible --break-system-packages`)
-* Clone and enter the repo (git clone)
-* ansible-galaxy install -r requirements.yml
-* Make sure we have a sudo token (sudo whoami)
-* ansible-playbook main.yml
+1. Install Parrot HTB Edition
+2. Run following commands
+```
+#Install Ansible
+python3 -m pip install ansible --break-system-packages
 
-# Off-Video Changes
-* Mate-Terminal Colors, I show how to configure it here (https://www.youtube.com/watch?v=2y68gluYTcc). I just did the steps in that video on my old VM to backup the color scheme, then copied it to this repo.
-* Evil-Winrm/Certipy/SharpCollection/CME/Impacket, will make a video for these soon
-* Updated BurpSuite Activation. Later versions of ansible would hang if a shell script started a process that didn't die. Put a timeout on the java process
+#Clone repo
+git clone https://github.com/n0isegat3/parrot-build
+
+#Install requirements
+ansible-galaxy install -r requirements.yml
+
+#Make sure to have a sudo token
+sudo whoami
+
+#Run playbook
+ansible-playbook main.yml
+```
+3. Enjoy
+
+# Credits
+Thank you ippsec for initial automation! You can find his repo on github.com/ippsec/parrot-build

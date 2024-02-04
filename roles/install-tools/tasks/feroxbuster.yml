@@ -7,7 +7,5 @@
 
 - name: "Install Feroxbuster"
   shell: "curl -sL https://raw.githubusercontent.com/epi052/feroxbuster/main/install-nix.sh | bash -s $HOME/.local/bin"
-  async: 45
-  poll: 0
   become: true
   become_method: sudo

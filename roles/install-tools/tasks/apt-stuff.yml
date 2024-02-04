@@ -12,11 +12,26 @@
 - name: "Installing Packages"
   package:
     name:
-      - jq
-      - pipx
-      - ntpdate
-      - flameshot
+      - bruteforce-salted-openssl
+      - cifs-utils
+      - crowbar
       - exiftool
+      - flamerobin
+      - flameshot
+      - gcc-mingw-w64
+      - gss-ntlmssp
+      - hashcat
+      - heimdal-clients
+      - htop
+      - httrack
+      - jq
+      - libsasl2-modules-gssapi-heimdal
+      - ntpdate
+      - pipx
+      - rdesktop
+      - ruby
+      - ruby-dev
+      - snmp
     state: latest
   become: true
   become_method: sudo

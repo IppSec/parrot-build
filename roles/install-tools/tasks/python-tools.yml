@@ -5,6 +5,10 @@
     source: "{{ item.url }}"
     state: latest
   loop:
-    - { name: 'impacket', url: 'git+https://github.com/fortra/impacket.git' }
-    - { name: 'crackmapexec', url: 'git+https://github.com/Porchetta-Industries/CrackMapExec.git' }
+    - { name: 'AutoRecon', url: 'git+https://github.com/Tib3rius/AutoRecon.git'}
     - { name: 'certipy-ad', url: 'git+https://github.com/ly4k/Certipy.git' }
+    - { name: 'crackmapexec', url: 'git+https://github.com/Porchetta-Industries/CrackMapExec.git' }
+    - { name: 'impacket', url: 'git+https://github.com/fortra/impacket.git' }
+    - { name: 'mitm6', url: 'git+https://github.com/dirkjanm/mitm6.git'}
+    - { name: 'pypykatz', url: 'git+https://github.com/skelsec/pypykatz.git'}
+    - { name: 'updog', url: 'git+https://github.com/sc0tfree/updog.git'}

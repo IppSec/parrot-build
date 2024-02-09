@@ -26,6 +26,7 @@
       - httrack
       - jq
       - libsasl2-modules-gssapi-heimdal
+      - libkrb5-dev
       - ntpdate
       - pipx
       - rdesktop

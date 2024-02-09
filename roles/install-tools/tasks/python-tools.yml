@@ -6,6 +6,7 @@
     state: latest
   loop:
     - { name: 'AutoRecon', source: 'git+https://github.com/Tib3rius/AutoRecon.git'}
+    - { name: 'bloodyAD', source: 'git+https://github.com/CravateRouge/bloodyAD.git'}
     - { name: 'certipy-ad', source: 'git+https://github.com/ly4k/Certipy.git' }
     - { name: 'crackmapexec', source: 'git+https://github.com/Porchetta-Industries/CrackMapExec.git' }
     - { name: 'impacket', source: 'git+https://github.com/fortra/impacket.git' }

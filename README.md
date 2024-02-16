@@ -7,6 +7,7 @@ python3 -m pip install ansible --break-system-packages
 
 #Clone repo
 git clone https://github.com/n0isegat3/parrot-build
+cd parrot-build
 
 #Install requirements
 ansible-galaxy install -r requirements.yml

@@ -3,21 +3,22 @@
   gem:
     name: "{{ item }}"
     state: latest
+    user_install: false
   loop:
-    - logger
-    - stringio
-    - winrm
     - builder
     - erubi
+    - evil-winrm
     - gssapi
     - gyoku
     - httpclient
-    - logging
     - little-plugger
+    - logger
+    - logging
     - nori
     - rubyntlm
+    - stringio
+    - winrm
     - winrm-fs
-    - evil-winrm
   become: true
   become_method: sudo
 

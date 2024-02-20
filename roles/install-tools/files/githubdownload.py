@@ -79,14 +79,13 @@ def extract_tar(compressed_data, out_file):
     Returns: Nothing
     """
     try:
-        gzip_header = compressed_data.getvalue()[:10]
-        if gzip_header.startswith(b"\x1f\x8b"):
-            with gzip.open(compressed_data, "rb") as gz:
-                with tarfile.open(fileobj=gz, mode="r:gz") as tar:
-                    tar.extractall(path=out_file)    
-                    return
-        else:
-            raise Exception("Unable to identify compression type")
+      gzip_header = compressed_data.getvalue()[:10]
+      if gzip_header.startswith(b"\x1f\x8b"):
+        tar = tarfile.open(fileobj=compressed_data)
+        tar.extractall(path=out_file)
+        return
+      else:
+          raise Exception("Unable to identify compression type")
     except Exception as e:
         raise Exception(e)
 
@@ -164,4 +163,3 @@ if __name__ == "__main__":
     print("Usage: python gitdownload.py <repo> <regex> <output_directory> <name:optional>")    
     print("Example: python gitdownload.py jpillora/chisel _darwin_amd64.gz /tmp chisel_darwin_amd64")
     sys.exit(1)
-

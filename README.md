@@ -2,7 +2,7 @@
 
 # Instructions
 * Start with Parrot HTB Edition
-* Install Ansible (python3 -m pip install ansible)
+* Install Ansible (python3 -m pip install ansible --break-system-packages)
 * Clone and enter the repo (git clone)
 * ansible-galaxy install -r requirements.yml
 * Make sure we have a sudo token (sudo whoami)

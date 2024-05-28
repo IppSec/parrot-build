@@ -674,7 +674,7 @@
 -w /usr/bin/kubelet -k kubelet
 
 # ipc system call
-# /usr/include/linux/ipc.h
+# /usr/include_tasks/linux/ipc.h
 
 ## msgctl
 #-a always,exit -S ipc -F a0=14 -k T1559_Inter-Process_Communication

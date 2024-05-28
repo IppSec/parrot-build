@@ -3,7 +3,7 @@ directory = "/var/log/laurel"
 # Drop privileges from root to this user
 user = "_laurel"
 # The periodical time window in seconds for status information to be printed to Syslog.
-# Status report includes the running version, config and parsing stats.
+# Status report include_taskss the running version, config and parsing stats.
 # Default is 0 --> no status reports.
 statusreport-period = 0
 # By default, audit events are read from stdin ("stdin"). Alternatively, they

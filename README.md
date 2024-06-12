@@ -5,6 +5,9 @@
 #Install Ansible
 python3 -m pip install ansible --break-system-packages
 
+#Add Ansible to PATH
+export PATH="$PATH:$HOME/.local/bin"
+
 #Clone repo
 git clone https://github.com/n0isegat3/parrot-build
 cd parrot-build

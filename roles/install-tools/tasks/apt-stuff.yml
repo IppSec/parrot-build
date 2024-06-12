@@ -1,17 +1,25 @@
 ---
 - name: "Updating apt repo/cache"
-  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+  apt:
+    update_cache: yes
+    upgrade: dist
   become: true
   become_method: sudo
 
 - name: "Upgrade all packages"
-  apt: upgrade=yes force_apt_get=yes
+  apt:
+    upgrade: full
+    force: yes
+    autoremove: yes
+    autoclean: yes
   become: true
   become_method: sudo
   
 - name: "Installing Packages"
-  package:
-    name:
+  apt: 
+    name: "{{ item }}"
+    state: present
+  with_items:
       - bruteforce-salted-openssl
       - cifs-utils
       - crowbar
@@ -27,7 +35,6 @@
       - httrack
       - jq
       - libsasl2-modules-gssapi-heimdal
-      - libkrb5-dev
       - neo4j
       - ntpdate
       - pipx
@@ -35,6 +42,5 @@
       - ruby
       - ruby-dev
       - snmp
-    state: latest
   become: true
   become_method: sudo

@@ -13,3 +13,4 @@
     - { name: 'mitm6', source: 'git+https://github.com/dirkjanm/mitm6.git'}
     - { name: 'pypykatz', source: 'git+https://github.com/skelsec/pypykatz.git'}
     - { name: 'updog', source: 'git+https://github.com/sc0tfree/updog.git'}
+    - { name: 'AD-miner', source: 'git+https://github.com/Mazars-Tech/AD_Miner.git'}

@@ -15,6 +15,7 @@
       - bruteforce-salted-openssl
       - cifs-utils
       - crowbar
+      - docker.io
       - exiftool
       - flamerobin
       - flameshot
@@ -27,6 +28,7 @@
       - jq
       - libsasl2-modules-gssapi-heimdal
       - libkrb5-dev
+      - neo4j
       - ntpdate
       - pipx
       - rdesktop

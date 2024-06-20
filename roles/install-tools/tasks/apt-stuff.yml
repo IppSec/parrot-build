@@ -1,22 +1,46 @@
 ---
 - name: "Updating apt repo/cache"
-  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+  apt:
+    update_cache: yes
+    upgrade: dist
   become: true
   become_method: sudo
 
 - name: "Upgrade all packages"
-  apt: upgrade=yes force_apt_get=yes
+  apt:
+    upgrade: full
+    force: yes
+    autoremove: yes
+    autoclean: yes
   become: true
   become_method: sudo
   
 - name: "Installing Packages"
-  package:
-    name:
-      - jq
-      - pipx
-      - ntpdate
-      - flameshot
+  apt: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - bruteforce-salted-openssl
+      - cifs-utils
+      - crowbar
+      - docker.io
       - exiftool
-    state: latest
+      - flamerobin
+      - flameshot
+      - gcc-mingw-w64
+      - gss-ntlmssp
+      - hashcat
+      - heimdal-clients
+      - htop
+      - httrack
+      - jq
+      - libsasl2-modules-gssapi-heimdal
+      - neo4j
+      - ntpdate
+      - pipx
+      - rdesktop
+      - ruby
+      - ruby-dev
+      - snmp
   become: true
   become_method: sudo

@@ -9,5 +9,9 @@
   copy:
     src: "{{ role_path }}/files/.tmux.conf"
     dest: "{{ ansible_env.HOME }}"
-
-
+- name: "Copying Tmux VPN info script"
+  copy:
+    src: "{{ role_path }}/files/.tmux.conf"
+    dest: "/opt"
+  become: true
+  become_method: sudo

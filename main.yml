@@ -7,7 +7,7 @@
     - role: "roles/configure-tmux"
     - role: "roles/customize-terminal"
     - role: "roles/customize-browser"
-    - role: "roles/configure-logging"
+    # - role: "roles/configure-logging"
     - role: "roles/configure-system"
     - role: gantsign.visual-studio-code
       users:

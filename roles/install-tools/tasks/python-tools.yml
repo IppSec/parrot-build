@@ -2,9 +2,15 @@
 - name: "Install pipx tools"
   community.general.pipx:
     name: "{{ item.name }}"
-    source: "{{ item.url }}"
+    source: "{{ item.source }}"
     state: latest
   loop:
-    - { name: 'impacket', url: 'git+https://github.com/fortra/impacket.git' }
-    - { name: 'crackmapexec', url: 'git+https://github.com/Porchetta-Industries/CrackMapExec.git' }
-    - { name: 'certipy-ad', url: 'git+https://github.com/ly4k/Certipy.git' }
+    - { name: 'AutoRecon', source: 'git+https://github.com/Tib3rius/AutoRecon.git'}
+    - { name: 'bloodyAD', source: 'git+https://github.com/CravateRouge/bloodyAD.git'}
+    - { name: 'certipy-ad', source: 'git+https://github.com/ly4k/Certipy.git' }
+    - { name: 'crackmapexec', source: 'git+https://github.com/Porchetta-Industries/CrackMapExec.git' }
+    - { name: 'impacket', source: 'git+https://github.com/fortra/impacket.git' }
+    - { name: 'mitm6', source: 'git+https://github.com/dirkjanm/mitm6.git'}
+    - { name: 'pypykatz', source: 'git+https://github.com/skelsec/pypykatz.git'}
+    - { name: 'updog', source: 'git+https://github.com/sc0tfree/updog.git'}
+    - { name: 'AD-miner', source: 'git+https://github.com/Mazars-Tech/AD_Miner.git'}

@@ -9,3 +9,5 @@
 - name: "Install the /tmp/jdk-22_linux-x64_bin.deb package"
   ansible.builtin.apt:
     deb: /tmp/jdk-22_linux-x64_bin.deb
+  become: true
+  become_method: sudo

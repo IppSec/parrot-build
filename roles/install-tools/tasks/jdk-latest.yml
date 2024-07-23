@@ -1,0 +1,13 @@
+---
+- name: "Downloading https://download.oracle.com/java/22/latest/jdk-22_linux-x64_bin.deb"
+  get_url:
+    url: https://download.oracle.com/java/22/latest/jdk-22_linux-x64_bin.deb
+    checksum: sha256:799f6219d3ed1bdbab474656fb9f34397b22c8a441c35f87a1a8e771b19b4baa
+    dest: /tmp/jdk-22_linux-x64_bin.deb
+    mode: 0640
+
+- name: "Install the /tmp/jdk-22_linux-x64_bin.deb package"
+  ansible.builtin.apt:
+    deb: /tmp/jdk-22_linux-x64_bin.deb
+  become: true
+  become_method: sudo

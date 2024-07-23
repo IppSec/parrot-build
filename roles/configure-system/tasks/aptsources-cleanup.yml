@@ -1,0 +1,9 @@
+- name: "Mark the PYZ bundle as executable"
+  shell: chmod a+x /tmp/aptsources-cleanup.pyz
+  become: true
+  become_method: sudo
+
+- name: "Cleanup the APT sources. This will erase all the duplicates."
+  shell: yes | python3 -OEs /tmp/aptsources-cleanup.pyz
+  become: true
+  become_method: sudo

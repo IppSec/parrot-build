@@ -4,6 +4,16 @@
     src: "{{ role_path }}/files/.bashrc"
     dest: "{{ ansible_env.HOME }}"
 
+- name: "Ensure .bash_profile sources .bashrc inside tmux"
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bash_profile"
+    line: |
+      if [[ -n "$TMUX" ]]; then
+          source ~/.bashrc
+      fi
+    insertafter: EOF
+    create: yes
+    
 - name: "Read current mate terminal profiles"
   dconf:
     key: "/org/mate/terminal/global/profile-list"

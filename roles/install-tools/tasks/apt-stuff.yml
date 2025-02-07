@@ -17,6 +17,7 @@
       - ntpdate
       - flameshot
       - exiftool
+      - rsyslog
     state: latest
   become: true
   become_method: sudo

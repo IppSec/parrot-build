@@ -81,7 +81,6 @@ fi
 
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*|tmux*)
     if [ -n "$(ps -ef | grep 'openvpn [eu|au|us|sg]')" ]; then
@@ -92,21 +91,24 @@ xterm*|rxvt*|tmux*)
     
     WIFI=$(nmcli c show | grep wifi)
     ETHER=$(nmcli c show | grep ethernet | grep -v '\-\-')
+    IS_VPN_CONNECTED=$(nmcli c show | grep vpn | grep -E \(eu\|au\|us\|sg\) | awk '{print $4}')
     
     VPN_DEV=$(ip addr | grep tun | grep inet | grep -E "(10\.10|10\.129)" | tr -s ' ' | awk '{print $8}')
     WIFI_DEV=$([ -n "$WIFI" ] && echo $WIFI | awk '{print $4}')
     ETHER_DEV=$([ -n "$ETHER" ] && echo $ETHER | awk '{print $4}')
     
-    if [ ! -z "$VPN" ]; then
-      if [ -n "$VPN_DEV" ]; then
-        IP=$(ip -4 -o addr show $VPN_DEV|awk '{print $4}'|sed 's/\/.*$//g')
-      else
-        IP=$(ip -4 -o addr show tun0|awk '{print $4}'|sed 's/\/.*$//g')
-      fi
-    elif [ ! -z "$WIFI" ]; then
+    if [ ! -z "$WIFI" ]; then
       IP=$(ip -4 -o addr show $WIFI_DEV|awk '{print $4}'|sed 's/\/.*$//g')
     else
       IP=$(ip -4 -o addr show $ETHER_DEV|awk '{print $4}'|sed 's/\/.*$//g')
+    fi
+    
+    if [ ! -z "$VPN" ]; then
+      if [ -n "$VPN_DEV" ]; then
+        IP=$(ip -4 -o addr show $VPN_DEV|awk '{print $4}'|sed 's/\/.*$//g')
+      elif [ "$IS_VPN_CONNECTED" != '--' ]; then
+        IP=$(ip -4 -o addr show tun0|awk '{print $4}'|sed 's/\/.*$//g')
+      fi
     fi
     PS1="\[\033[1;32m\]\342\224\214\342\224\200\$([[ \${IP} == *\"10.\"* ]] && echo \"[\[\033[1;34m\]\${VPN}\[\033[1;32m\]]\342\224\200\033[1;37m\]\[\033[1;32m\]\")[\[\033[1;37m\]\${IP}\[\033[1;32m\]]\342\224\200[\[\033[1;37m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[1;32m\]]\342\224\200[\[\033[1;37m\]\w\[\033[1;32m\]]\n\[\033[1;32m\]\342\224\224\342\224\200\342\224\200\342\225\274 [\[\e[01;33m\]★\[\e[01;32m\]]\\$ \[\e[0m\]"
     ;;

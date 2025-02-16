@@ -1,0 +1,49 @@
+---
+- name: "Creating Directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0744'
+  become: true  
+  loop:
+    - "/opt/bloodhound"
+    - "/opt/bloodhound/server"
+
+- name: "Download composer file"
+  get_url:
+    url: "https://ghst.ly/getbhce"
+    dest: "/opt/bloodhound/server/docker-compose.yaml"
+  become: true
+
+- name: "Change bloodhound port away from 8080"
+  replace:    
+    path: "/opt/bloodhound/server/docker-compose.yaml"    
+    regexp: 'BLOODHOUND_PORT:-8080'
+    replace: 'BLOODHOUND_PORT:-8088'
+  become: true
+
+- name: "Download BloodHound"
+  community.docker.docker_compose_v2:
+    project_src: "/opt/bloodhound/server"
+    state: present
+  become: true
+
+- name: "Wait for bloodhound to be up"
+  wait_for:
+    host: "localhost"
+    port: 7474
+    delay: 10
+    timeout: 300
+  become: true
+
+# There probably is a better way to do this...
+- name: "Grab Bloodhound Password"
+  shell: 'cd /opt/bloodhound/server; docker compose logs bloodhound | grep -oP "Password Set To:\s+\K[\S]+"'
+  register: bloodhound_password
+  become: true
+
+- name: "Create file with bloodhound password"
+  copy:
+    content: "username: admin\npassword: {{ bloodhound_password.stdout }}"
+    dest: "/opt/bloodhound/server/initial-password.txt"
+  become: true

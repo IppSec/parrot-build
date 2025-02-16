@@ -4,3 +4,4 @@
 - include_tasks: github-repos.yml
 - include_tasks: python-tools.yml
 - include_tasks: gem-tools.yml
+- include_tasks: bloodhound.yml

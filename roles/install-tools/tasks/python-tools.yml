@@ -6,5 +6,6 @@
     state: latest
   loop:
     - { name: 'impacket', url: 'git+https://github.com/fortra/impacket.git' }
-    - { name: 'crackmapexec', url: 'git+https://github.com/Porchetta-Industries/CrackMapExec.git' }
+    - { name: 'netexec', url: 'git+https://github.com/Pennyw0rth/NetExec.git' }
     - { name: 'certipy-ad', url: 'git+https://github.com/ly4k/Certipy.git' }
+    - { name: 'bloodhound-ce', url: 'git+https://github.com/dirkjanm/BloodHound.py.git@bloodhound-ce' }

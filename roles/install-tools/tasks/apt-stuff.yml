@@ -55,18 +55,29 @@
   become: true
   become_method: sudo
 
+- name: "Ensure apt keyrings directory exists"
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  become: true
+  become_method: sudo
+
 - name: "Add Docker keyring to apt"
-  apt_key:
+  get_url:
     url: "https://download.docker.com/linux/debian/gpg"
-    state: present
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+    force: yes
   become: true
   become_method: sudo
 
 - name: "Install Docker Repository"
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ distribution }} stable"
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ distribution }} stable"
     state: present
     update_cache: yes
+    filename: docker
   become: true
   become_method: sudo
 

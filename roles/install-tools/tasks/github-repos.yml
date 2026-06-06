@@ -3,6 +3,7 @@
   git:
     repo: "{{ item.repo }}"
     dest: "{{ item.location }}"
+    depth: 1
   loop:
     - { repo: "https://github.com/Flangvik/SharpCollection", location: "/opt/SharpCollection" }
     - { repo: "https://github.com/danielmiessler/SecLists", location: "/opt/SecLists" }
@@ -32,8 +33,8 @@
     #- { repo: "jpillora/chisel",  regex: "_darwin_amd64", location: "/opt/chisel", filename: "chisel_osx" }
     - { repo: "carlospolop/PEASS-ng",  regex: "linpeas.sh", location: "/opt/peas" }
     - { repo: "carlospolop/PEASS-ng",  regex: "winPEASx64.exe", location: "/opt/peas" }
-    - { repo: "WithSecureLabs/chainsaw",  regex: "chainsaw_all_", location: "/opt/" }
-    - { repo: "BloodHoundAD/BloodHound", regex: "BloodHound-linux-x64.zip", location: "/opt/" }
+    - { repo: "WithSecureLabs/chainsaw",  regex: "chainsaw_x86_64-unknown-linux-gnu.tar.gz", location: "/opt/" }
+    - { repo: "SpecterOps/BloodHound-Legacy", regex: "BloodHound-linux-x64.zip", location: "/opt/" }
   async: 45
   poll: 0
   become: true

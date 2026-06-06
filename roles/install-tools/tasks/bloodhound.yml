@@ -22,10 +22,10 @@
     replace: 'BLOODHOUND_PORT:-8088'
   become: true
 
-- name: "Download BloodHound"
-  community.docker.docker_compose_v2:
-    project_src: "/opt/bloodhound/server"
-    state: present
+- name: "Start BloodHound CE via Docker Compose"
+  ansible.builtin.command:
+    cmd: "docker compose up -d"
+    chdir: "/opt/bloodhound/server"
   become: true
 
 - name: "Wait for bloodhound to be up"

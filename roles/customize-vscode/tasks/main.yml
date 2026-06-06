@@ -1,0 +1,27 @@
+---
+# Install VS Code extensions for the current user.
+#
+# gantsign.visual-studio-code installs the `code` binary itself; here we own
+# the extension list so we can keep it idempotent and tolerant of the noisy
+# exit behaviour of `code --install-extension` (stderr deprecation notices and
+# "already installed" collisions that would otherwise fail the playbook).
+
+- name: "Gather already installed VS Code extensions"
+  ansible.builtin.command:
+    cmd: "code --list-extensions"
+  register: vscode_installed_extensions
+  changed_when: false
+  failed_when: false
+  become: true
+  become_user: "{{ real_user }}"
+
+- name: "Install missing VS Code extensions (tolerating stderr and collisions)"
+  ansible.builtin.command:
+    cmd: "code --install-extension {{ item }}"
+  loop: "{{ vscode_extensions }}"
+  when: (item | lower) not in (vscode_installed_extensions.stdout_lines | default([]) | map('lower') | list)
+  register: vscode_extension_install
+  changed_when: "'successfully installed' in (vscode_extension_install.stdout | default(''))"
+  failed_when: false
+  become: true
+  become_user: "{{ real_user }}"

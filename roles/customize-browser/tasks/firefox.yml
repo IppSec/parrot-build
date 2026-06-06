@@ -1,7 +1,45 @@
-- name: "Updating Firefox Policies"
+- name: "Ensure Firefox policies directory exists"
+  ansible.builtin.file:
+    path: /etc/firefox/policies
+    state: directory
+    mode: '0755'
+  become: true
+  become_method: sudo
+
+- name: "Ensure Firefox standard distribution directory exists"
+  ansible.builtin.file:
+    path: /usr/share/firefox/distribution
+    state: directory
+    mode: '0755'
+  become: true
+  become_method: sudo
+
+- name: "Ensure Firefox ESR distribution directory exists"
+  ansible.builtin.file:
+    path: /usr/share/firefox-esr/distribution
+    state: directory
+    mode: '0755'
+  become: true
+  become_method: sudo
+
+- name: "Updating Firefox Policies (System-wide)"
   template: 
     src: "templates/policies.json.j2"
-    dest: "/usr/share/firefox-esr/distribution/policies.json"
+    dest: /etc/firefox/policies/policies.json
+  become: true
+  become_method: sudo
+
+- name: "Updating Firefox Policies (Standard App)"
+  template: 
+    src: "templates/policies.json.j2"
+    dest: /usr/share/firefox/distribution/policies.json
+  become: true
+  become_method: sudo
+
+- name: "Updating Firefox Policies (ESR App)"
+  template: 
+    src: "templates/policies.json.j2"
+    dest: /usr/share/firefox-esr/distribution/policies.json
   become: true
   become_method: sudo
 

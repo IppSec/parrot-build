@@ -4,9 +4,9 @@
   lineinfile:
     dest: /etc/sudoers
     insertbefore: EOF
-    regexp: "{{ ansible_user_id }} ALL="
+    regexp: "{{ real_user }} ALL="
     line: "{{ item }}"
     validate: visudo -cf %s
-  when: ansible_user_id != 'root'
+  when: real_user != 'root'
   with_items:
-    - "{{ ansible_user_id }}\tALL=(ALL) NOPASSWD:ALL"
+    - "{{ real_user }}\tALL=(ALL) NOPASSWD:ALL"

@@ -1,0 +1,16 @@
+---
+# defaults file for customize-vscode
+
+# VS Code extensions installed for the invoking user. These are installed
+# with `code --install-extension` rather than through the gantsign role so a
+# single failing extension (a pre-bundled Copilot build, a publisher rename,
+# or a Node.js deprecation notice written to stderr) cannot abort the play.
+vscode_extensions:
+  - streetsidesoftware.code-spell-checker
+  - ms-python.python
+  - DEVSENSE.phptools-vscode
+  - GitHub.copilot
+  - snyk-security.snyk-vulnerability-scanner
+  - golang.go
+  - ms-vscode.cpptools
+  - redhat.vscode-yaml

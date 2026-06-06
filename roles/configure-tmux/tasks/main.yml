@@ -8,6 +8,10 @@
 - name: "Copying Tmux Config"
   copy:
     src: "{{ role_path }}/files/.tmux.conf"
-    dest: "{{ ansible_env.HOME }}"
+    dest: "{{ real_user_home }}/.tmux.conf"
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+    mode: '0644'
+  become: true
 
 

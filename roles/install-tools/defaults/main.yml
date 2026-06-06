@@ -1,3 +1,10 @@
 ---
-# defaults file for configure-logging
+# defaults file for install-tools
+
+# Debian release codename used for the Docker APT repository.
+# download.docker.com/linux/debian only publishes packages for Debian
+# codenames, and Parrot reports its own codename (which Docker does not
+# build for), so we pin a known-good Debian release here by default.
+# Set this to "" to fall back to the auto-detected
+# ansible_facts['distribution_release'] on a pure Debian host.
 distribution: "bookworm"

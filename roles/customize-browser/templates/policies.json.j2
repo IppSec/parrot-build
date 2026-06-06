@@ -1,7 +1,7 @@
 {
   "policies": {
     "Certificates": {
-      "Install": ["/usr/local/share/ca-certificates/BurpSuiteCA.der"]
+      "Install": ["/usr/local/share/ca-certificates/BurpSuiteCA.crt"]
     },
     "DisableAppUpdate": true,
     "DisplayBookmarksToolbar": true,
@@ -50,6 +50,32 @@
         "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"{{ "," if not loop.last }}
 {% endfor %}
       ]
+    },
+    "Preferences": {
+      "network.proxy.type": {
+        "Value": 1,
+        "Status": "default"
+      },
+      "network.proxy.http": {
+        "Value": "127.0.0.1",
+        "Status": "default"
+      },
+      "network.proxy.http_port": {
+        "Value": 8080,
+        "Status": "default"
+      },
+      "network.proxy.ssl": {
+        "Value": "127.0.0.1",
+        "Status": "default"
+      },
+      "network.proxy.ssl_port": {
+        "Value": 8080,
+        "Status": "default"
+      },
+      "network.proxy.share_proxy_settings": {
+        "Value": true,
+        "Status": "default"
+      }
     },
     "FirefoxHome": {
       "Search": true,

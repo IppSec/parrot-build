@@ -2,6 +2,36 @@
 - name: "Customizing Parrot"
   hosts: localhost
   connection: local
+  gather_facts: true
+  
+  pre_tasks:
+    - name: "Get login user or sudo user"
+      set_fact:
+        real_user: "{{ ansible_env.SUDO_USER | default(ansible_env.USER) | default(ansible_user_id) }}"
+
+    - name: "Fallback if real_user is root"
+      shell: "logname || echo $LOGNAME || whoami"
+      register: logname_output
+      when: real_user == 'root'
+      changed_when: false
+      failed_when: false
+
+    - name: "Set real_user from logname if needed"
+      set_fact:
+        real_user: "{{ logname_output.stdout | default('root') }}"
+      when: real_user == 'root' and logname_output.stdout is defined and logname_output.stdout != ""
+
+    - name: "Get passwd database information for real_user"
+      getent:
+        database: passwd
+        key: "{{ real_user }}"
+      register: passwd_info
+      failed_when: false
+
+    - name: "Set home directory fact"
+      set_fact:
+        real_user_home: "{{ getent_passwd[real_user][4] if (getent_passwd is defined and real_user in getent_passwd) else ansible_env.HOME }}"
+
   roles:
     - role: "roles/install-tools"
     - role: "roles/configure-tmux"
@@ -9,13 +39,6 @@
     - role: "roles/customize-browser"
     - role: "roles/configure-logging"
     - role: "roles/configure-system"
-    - role: gantsign.visual-studio-code
-      users:
-        - username: "{{ ansible_user_id }}" 
-          visual_studio_code_extensions:
-            - streetsidesoftware.code-spell-checker
-            - ms-python.python
-            - DEVSENSE.phptools-vscode
-            - GitHub.copilot
-            - snyk-security.snyk-vulnerability-scanner
+    - role: "roles/customize-vscode"
+
 

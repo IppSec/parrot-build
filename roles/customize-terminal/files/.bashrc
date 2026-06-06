@@ -1,3 +1,7 @@
+# Force terminal session to UTF-8 to resolve coding and tool errors
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -8,7 +12,7 @@ case $- in
       *) return;;
 esac
 
-export PATH=~/.local/bin:/snap/bin:/usr/sandbox/:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/share/games:/usr/local/sbin:/usr/sbin:/sbin:$PATH
+export PATH=~/go/bin:~/.local/bin:/snap/bin:/usr/sandbox/:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/share/games:/usr/local/sbin:/usr/sbin:/sbin:$PATH
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options

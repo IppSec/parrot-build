@@ -61,15 +61,15 @@
   become: true
   become_method: sudo
 
-- name: "Downloading https://github.com/threathunters-io/laurel/releases/download/v0.5.2/laurel-v0.5.2-x86_64-glibc.tar.gz"
+- name: "Downloading https://github.com/threathunters-io/laurel/releases/download/v0.7.3/laurel-0.7.3-x86_64-glibc.tar.gz"
   get_url:
-    url: https://github.com/threathunters-io/laurel/releases/download/v0.5.2/laurel-v0.5.2-x86_64-glibc.tar.gz
-    dest: /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz
+    url: https://github.com/threathunters-io/laurel/releases/download/v0.7.3/laurel-0.7.3-x86_64-glibc.tar.gz
+    dest: /tmp/laurel-0.7.3-x86_64-glibc.tar.gz
     mode: 0640
 
-- name: "Extract /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz"
+- name: "Extract /tmp/laurel-0.7.3-x86_64-glibc.tar.gz"
   unarchive:
-    src: /tmp/laurel-v0.5.2-x86_64-glibc.tar.gz
+    src: /tmp/laurel-0.7.3-x86_64-glibc.tar.gz
     dest: /tmp/laurel/        
     owner: root
     group: root
@@ -78,7 +78,8 @@
   become_method: sudo
 
 - name: "Running install -m755 laurel /usr/local/sbin/laurel"
-  command: "install -m755 laurel /usr/local/sbin/laurel"
+  shell: |
+    find . -type f -name laurel -exec install -m755 {} /usr/local/sbin/laurel \;
   args:
     chdir: /tmp/laurel/
   become: true

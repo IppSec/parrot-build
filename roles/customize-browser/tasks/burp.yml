@@ -1,27 +1,71 @@
-- name: "Check if BurpSuiteCA.der exists"
+- name: "Check if BurpSuiteCA.crt exists"
   stat:
-    path: /usr/local/share/ca-certificates/BurpSuiteCA.der
+    path: /usr/local/share/ca-certificates/BurpSuiteCA.crt
   register: burp_cert
   
+- name: "Create Java userPrefs directory for Burp"
+  ansible.builtin.file:
+    path: "{{ real_user_home }}/.java/.userPrefs/burp"
+    state: directory
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+    mode: '0755'
+    recurse: yes
+  become: true
+  when: burp_cert.stat.exists == False
+
+- name: "Create Burp Java preferences file to accept EULA"
+  ansible.builtin.copy:
+    dest: "{{ real_user_home }}/.java/.userPrefs/burp/prefs.xml"
+    content: |
+      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+      <!DOCTYPE map SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+      <map MAP_XML_VERSION="1.0">
+        <entry key="eula" value="20"/>
+        <entry key="eula.community" value="20"/>
+        <entry key="eula.professional" value="20"/>
+        <entry key="eulacommunity" value="20"/>
+        <entry key="eulafree" value="20"/>
+        <entry key="eulapro" value="20"/>
+      </map>
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+    mode: '0644'
+  become: true
+  when: burp_cert.stat.exists == False
+
 - name: "Copying Burp Script"
   copy:
     src: files/getburpcert.sh
     dest: /tmp/getburpcert.sh
-    mode: 0744
+    mode: 0755
   when: burp_cert.stat.exists == False
 
 - name: "Executing bash script to Download CA Certificate"
   shell:
     /tmp/getburpcert.sh
+  become: true
+  become_user: "{{ real_user }}"
+  when: burp_cert.stat.exists == False
+
+- name: "Convert DER Certificate to PEM format"
+  ansible.builtin.command:
+    cmd: openssl x509 -inform der -in /tmp/cacert.der -out /tmp/BurpSuiteCA.crt
   when: burp_cert.stat.exists == False
 
 - name: "Copying CA Certificate to /usr/local/share/ca-certificates"
   copy:
-    src: /tmp/cacert.der
-    dest: /usr/local/share/ca-certificates/BurpSuiteCA.der
+    src: /tmp/BurpSuiteCA.crt
+    dest: /usr/local/share/ca-certificates/BurpSuiteCA.crt
     owner: root
     group: root
     mode: 0644
+  become: true
+  become_method: sudo
+  when: burp_cert.stat.exists == False
+
+- name: "Update CA Certificates"
+  ansible.builtin.command: update-ca-certificates
   become: true
   become_method: sudo
   when: burp_cert.stat.exists == False
@@ -44,8 +88,21 @@
   become_method: sudo
   loop: "{{ lookup('dict', burpsuite_extras_jars) }}"
   
+- name: Create .BurpSuite directory
+  ansible.builtin.file:
+    path: "{{ real_user_home }}/.BurpSuite"
+    state: directory
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+    mode: '0755'
+  become: true
+
 - name: Copy BurpSuite Community Config
   template:
     src: "templates/UserConfigCommunity.json.j2"
-    dest: "/home/{{ ansible_user_id }}/.BurpSuite/UserConfigCommunity.json"
+    dest: "{{ real_user_home }}/.BurpSuite/UserConfigCommunity.json"
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+    mode: '0644'
+  become: true
 
